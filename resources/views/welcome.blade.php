@@ -6,14 +6,17 @@
 </head>
 <body>
     @include('include')
-    <h1>Send FCM Notification</h1>
 
     @if(session('status'))
         <p style="color: green;">{{ session('status') }}</p>
     @endif
 
     <div class="container">
+         <h1>FCM Notification Alert System</h1>
         <div class="information-pannel">
+            <div class="row">
+                <div id="map" style="height: 500px;"></div>
+            </div>
             <div class="row">
                 <div class="col">
                     <div class="row">
@@ -64,10 +67,10 @@
                     <form method="POST" action="/campaigns">
                         @csrf
                         <label>Title:</label><br>
-                        <input name="title" required class="form-control"><br><br>
+                        <input name="title" required class="form-control" id="message-title">
 
                         <label>Body:</label><br>
-                        <textarea name="body" required class="form-control" id="message-body"></textarea><br><br>
+                        <textarea name="body" required class="form-control" id="message-body"  rows="5"></textarea><br><br>
 
                         <label>Device Tokens (comma-separated):</label><br>
                         <textarea name="tokens" class="form-control"></textarea><br><br>
@@ -81,5 +84,6 @@
         </div>
     </div>
     @include('script')
+    @include('map')
 </body>
 </html>
