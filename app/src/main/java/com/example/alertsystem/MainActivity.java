@@ -96,10 +96,14 @@ public class MainActivity extends AppCompatActivity {
                             double lng = location.getLongitude();
 
 
+
+
                             Map<String, Object> locationData = new HashMap<>();
                             locationData.put("lat", lat);
                             locationData.put("lng", lng);
                             locationData.put("timestamp", System.currentTimeMillis());
+                            locationData.put("token", token);
+
 
                             auth.signInAnonymously().addOnCompleteListener(task -> {
                                 user = auth.getCurrentUser();

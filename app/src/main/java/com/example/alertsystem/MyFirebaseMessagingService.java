@@ -3,6 +3,8 @@ package com.example.alertsystem;
 import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
@@ -19,6 +21,8 @@ import com.google.firebase.messaging.RemoteMessage;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String CHANNEL_ID = "default_channel";
+    private DatabaseHelper dbHelper;
+    private SQLiteDatabase db;
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     @Override
@@ -32,6 +36,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             title = remoteMessage.getNotification().getTitle();
             message = remoteMessage.getNotification().getBody();
         }
+
+        dbHelper =new DatabaseHelper(this);
+        db = dbHelper.getWritableDatabase();
+        ContentValues values =new ContentValues();
+        values.put("title", title);
+        values.put("message", message);
+        try{
+            db.insert("alert_table", null, values);
+        }catch(Exception e){
+            Log.d("FCM","Error saving Notification");
+        }
+        db.close();
 
         showNotification(title, message);
     }
