@@ -18,6 +18,7 @@ return new class extends Migration
             $table->json('tokens')->nullable(); // list of device tokens
             $table->string('topic')->nullable(); // or topic
             $table->enum('status', ['draft', 'scheduled', 'sent'])->default('draft');
+            $table->string('location'); // location for the notification
             $table->timestamp('scheduled_at')->nullable();
             $table->timestamps();
         });

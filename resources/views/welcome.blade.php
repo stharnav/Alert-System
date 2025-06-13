@@ -15,13 +15,19 @@
          <h1>FCM Notification Alert System</h1>
         <div class="information-pannel">
             <div class="row">
-                <div id="map" style="height: 500px;"></div>
+                <div id="map" style="height: 500px; border-radius: 10px "></div>
             </div>
-            <div class="row">
-                <div class="col">
+            <div class="row m-3">
+                <div class="col-4">
                     <div class="row">
                         <div class="col">
-                             <label for="alert-type">Alert for:</label>
+                            <label for="search">Search Location:</label>
+                            <input type="text" id="search" placeholder="Search Location" class="form-control" onkeydown="if(event.key === 'Enter'){ search(this.value); }">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                             <label for="alert-type">Alert type:</label>
                             <select class="form-control" name="alert_type" id="alert" required onChange="setMessage()">
                                 <option value="null">None</option>
                                 <option value="flood">Flood</option>
@@ -43,7 +49,7 @@
                    <div class="row">
                         <div class="col">
                             <label for="radius">Radius:</label>
-                            <input type="number" id="radius" placeholder="Radius in kilo meters" name="radius" required class="form-control">
+                            <input type="number" id="radius" placeholder="Radius in kilo meters" name="radius" required class="form-control" onkeyup="getRadius()">
                         </div>
                         <div class="col" id="scale" style="display: none;">
                             <label for="scale">Richter scale:</label>
@@ -69,11 +75,12 @@
                         <label>Title:</label><br>
                         <input name="title" required class="form-control" id="message-title">
 
-                        <label>Body:</label><br>
+                        <label>Description:</label><br>
                         <textarea name="body" required class="form-control" id="message-body"  rows="5"></textarea><br><br>
 
                         <label>Device Tokens (comma-separated):</label><br>
-                        <textarea name="tokens" class="form-control"></textarea><br><br>
+                        <input type="hidden" id="location" value="" name="location">
+                        <textarea name="tokens" class="form-control"></textarea><br>
 
                         <button type="submit" class="form-control">Create & Send</button>
                     </form>

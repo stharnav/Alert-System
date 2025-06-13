@@ -37,36 +37,87 @@
     const lat = e.latlng.lat;
     const lng = e.latlng.lng;
 
-    let location = fetchLocation(lat, lng);
-    console.log('Clicked location:', location);
+    fetchLocationWithCoordinate(lat, lng);
     // Remove previous marker if it exists
     if (currentMarker) {
       map.removeLayer(currentMarker);
     }
 
-    // Add new marker
-    currentMarker = L.marker([lat, lng]).addTo(map)
-      .bindPopup('Latitude: ' + lat.toFixed(5) + '<br>Longitude: ' + lng.toFixed(5) + '<br>Location: ' + location)
-      .openPopup();
+    
+    
 
-      document.getElementById('latitude').value = lat.toFixed(5);
-      document.getElementById('longtitude').value = lng.toFixed(5);
+      
   });
 
 
-  function fetchLocation(lat, lng) {
+  function fetchLocationWithCoordinate(lat, lng) {
     // Use a geocoding service to get the location name
     fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
       .then(response => response.json())
       .then(data => {
         if (data && data.display_name) {
-          document.getElementById('message-body').value += '\nअनुमानित केन्द्र: ' + data.display_name;
-          return data.display_name;
+          document.getElementById('location').value = '\nअनुमानित केन्द्र: ' + data.display_name;
+          document.getElementById('latitude').value = lat.toFixed(5);
+          document.getElementById('longtitude').value = lng.toFixed(5);
+          // Add new marker
+          currentMarker = L.marker([lat, lng]).addTo(map)
+            .bindPopup('Location: ' + data.display_name)
+            .openPopup();
         } else {
           console.log('Location not found');
         }
       })
       .catch(error => console.error('Error fetching location:', error));
+  }
+
+  function search(loction){
+    // Use a geocoding service to get the location name
+    fetch(`https://nominatim.openstreetmap.org/search?q=${loction}&countrycodes=np&format=json`)
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          const lat = data[0].lat;
+          const lon = data[0].lon;
+          map.setView([lat, lon], 10);
+          L.marker([lat, lon]).addTo(map)
+            .bindPopup('Location: ' + data[0].display_name)
+            .openPopup();
+            document.getElementById('location').value = '\nअनुमानित केन्द्र: ' + data[0].display_name;
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longtitude').value = lon;
+        } else {
+          alert('Location not found');
+        }
+      })
+      .catch(error => console.error('Error fetching location:', error));
+  }
+
+  function getRadius(){
+    const radius = document.getElementById('radius').value;
+    if (radius) {
+      const lat = parseFloat(document.getElementById('latitude').value);
+      const lng = parseFloat(document.getElementById('longtitude').value);
+      if (lat && lng) {
+      // Remove previous circle if it exists
+      if (window.currentCircle) {
+        map.removeLayer(window.currentCircle);
+      }
+      window.currentCircle = L.circle([lat, lng], {
+        color: 'blue',
+        fillColor: '#30f',
+        fillOpacity: 0.2,
+        radius: radius * 1000 // Convert km to meters
+      }).addTo(map);
+      } else {
+      alert('Please enter valid latitude and longitude.');
+      }
+    } else {
+      // Remove the circle if radius is empty
+      if (window.currentCircle) {
+        map.removeLayer(window.currentCircle);
+        window.currentCircle = null;
+      }
+    }
   }
   
 </script>

@@ -24,12 +24,13 @@ class CampaignController extends Controller
         $campaign = Campaign::create([
             'title' => $request->title,
             'body' => $request->body,
+            'location' => $request->location ?? 'Default Location',
             'tokens' => $tokens,
             'status' => 'sent',
         ]);
 
         foreach ($tokens as $token) {
-            $firebase->sendNotification($token, $campaign->title, $campaign->body);
+            $firebase->sendNotification($token, $campaign->title, $campaign->body. ' ' . $campaign->location);
         }
 
         return redirect()->back()->with('status', 'Campaign sent!');

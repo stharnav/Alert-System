@@ -11,6 +11,7 @@ class Campaign extends Model
         'body',
         'tokens',
         'status',
+        'location',
         'scheduled_at',
         'topic',
     ];
