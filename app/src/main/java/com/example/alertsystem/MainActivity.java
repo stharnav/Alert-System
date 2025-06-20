@@ -11,12 +11,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -24,10 +28,16 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+    private RecyclerView body;
+    private DatabaseHelper dbHelper;
+    private NotificationAdapter adapter;
+    private ArrayList<Notification>notiList;
+    private FloatingActionButton refreshButton;
     private FusedLocationProviderClient fusedLocationClient;
     private FirebaseFirestore db;
     private FirebaseAuth auth;
@@ -38,6 +48,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //
+        setContentView(R.layout.activity_main);
+        body = findViewById(R.id.main_body);
+        body.setLayoutManager(new LinearLayoutManager(this));
+        dbHelper = new DatabaseHelper(this);
+        notiList = dbHelper.getNotification();
+
+        adapter = new NotificationAdapter(notiList, this);
+        body.setAdapter(adapter);
+
+        refreshButton = findViewById(R.id.refreshButton);
+        refreshButton.setOnClickListener(V->{
+            notiList = dbHelper.getNotification();
+            adapter = new NotificationAdapter(notiList, this);
+            body.setAdapter(adapter);
+        });
+
+        //
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
@@ -75,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults, int deviceId) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults, deviceId);
@@ -86,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @RequiresPermission(allOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     private void getLocationAndSave() {
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
@@ -94,9 +124,6 @@ public class MainActivity extends AppCompatActivity {
                         if (location != null ) {
                             double lat = location.getLatitude();
                             double lng = location.getLongitude();
-
-
-
 
                             Map<String, Object> locationData = new HashMap<>();
                             locationData.put("lat", lat);

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresPermission;
 import androidx.core.app.NotificationCompat;
@@ -23,6 +24,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String CHANNEL_ID = "default_channel";
     private DatabaseHelper dbHelper;
     private SQLiteDatabase db;
+    private NotificationAdapter adapter;
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     @Override
@@ -44,6 +46,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         values.put("message", message);
         try{
             db.insert("alert_table", null, values);
+            //adapter.notifyDataSetChanged();
+            Toast.makeText(this, "Saving Notificatio", Toast.LENGTH_SHORT).show();
         }catch(Exception e){
             Log.d("FCM","Error saving Notification");
         }
