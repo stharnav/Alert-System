@@ -49,4 +49,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return notiList;
     }
 
+    public void delete(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete("alert_table", null, null);
+        db.close();
+    }
+
 }

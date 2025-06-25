@@ -64,7 +64,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setSmallIcon(android.R.drawable.ic_dialog_info) // Replace with your app icon
                 .setContentTitle(title)
                 .setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_HIGH) // Makes it show as a heads-up notification
+                .setPriority(NotificationCompat.PRIORITY_HIGH) // heads-up notification
                 .setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);

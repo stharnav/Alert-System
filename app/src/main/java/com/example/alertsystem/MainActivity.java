@@ -1,12 +1,16 @@
 package com.example.alertsystem;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.Manifest;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     private NotificationAdapter adapter;
     private ArrayList<Notification>notiList;
-    private FloatingActionButton refreshButton;
     private FusedLocationProviderClient fusedLocationClient;
     private FirebaseFirestore db;
     private FirebaseAuth auth;
@@ -58,12 +61,6 @@ public class MainActivity extends AppCompatActivity {
         adapter = new NotificationAdapter(notiList, this);
         body.setAdapter(adapter);
 
-        refreshButton = findViewById(R.id.refreshButton);
-        refreshButton.setOnClickListener(V->{
-            notiList = dbHelper.getNotification();
-            adapter = new NotificationAdapter(notiList, this);
-            body.setAdapter(adapter);
-        });
 
         //
         FirebaseMessaging.getInstance().getToken()
@@ -93,6 +90,35 @@ public class MainActivity extends AppCompatActivity {
         requestLocation();
 
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        String id = (String) item.getTitle();
+
+        if(id.equals("Delete")){
+            dbHelper.delete();
+            Toast.makeText(this, "Alerts deleted", Toast.LENGTH_SHORT).show();
+        }
+
+        if(id.equals("Restart")){
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
+        }
+
+        notiList = dbHelper.getNotification();
+        adapter = new NotificationAdapter(notiList, this);
+        body.setAdapter(adapter);
+        Toast.makeText(this, "Page refreshed", Toast.LENGTH_SHORT).show();
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void requestLocation(){
@@ -137,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
                                 String userId = user.getUid();
                                 db.collection("users").document(userId).set(locationData)
                                         .addOnSuccessListener(unused -> {
-                                            Toast.makeText(MainActivity.this, "Data updated successfully", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MainActivity.this, "Location has been updated successfully", Toast.LENGTH_SHORT).show();
                                         })
                                         .addOnFailureListener(e -> {
                                             // Handle failure
