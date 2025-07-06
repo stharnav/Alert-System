@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                                         })
                                         .addOnFailureListener(e -> {
                                             // Handle failure
-                                            Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MainActivity.this, "Error updating your location", Toast.LENGTH_SHORT).show();
                                         });
                             });
 
