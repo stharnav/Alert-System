@@ -8,7 +8,31 @@
     @include('include')
 
     @if(session('status'))
-        <p style="color: green;">{{ session('status') }}</p>
+         <!-- Modal -->
+        <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="statusModalLabel">Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{ session('status') }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- Auto-trigger Modal with JavaScript -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
+                statusModal.show();
+            });
+        </script>
     @endif
 
     <div class="container">
@@ -36,14 +60,15 @@
                             </select>
                         </div>
                     </div>
+                    <form method="POST" action="/campaigns">
                     <div class="row">
                         <div class="col">
-                             <label for="latitude">Latitude:</label>
-                                <input type="number" id="latitude" placeholder="Latitude" name="latitude" required class="form-control">
+                                <label for="latitude">Latitude:</label>
+                                <input type="number" id="latitude" placeholder="Latitude" name="latitude" required class="form-control" step="any">
                         </div>
                         <div class="col">
                                 <label for="longtitude">Longitude:</label>
-                                <input type="number" id="longtitude" placeholder="Longtitiude" name="longtitude" required class="form-control">
+                                <input type="number" id="longtitude" placeholder="Longitude" name="longtitude" required class="form-control" step="any">
                         </div>
                     </div>
                    <div class="row">
@@ -53,34 +78,19 @@
                         </div>
                         <div class="col" id="scale" style="display: none;">
                             <label for="scale">Richter scale:</label>
-                            <input type="number" id="earthquakeScale" placeholder="Richter scale range" name="scale" required class="form-control" onChange="setScale()"> 
+                            <input type="number" id="earthquakeScale" placeholder="Richter scale range" name="scale" class="form-control" onChange="setScale()"> 
                         </div>
                    </div>
                 </div>
                 <div class="col">
-                    <!-- <form action="/send-push" method="POST">
-                        @csrf
-                        <label for="token">Device Token:</label><br>
-                        <input type="text" name="token" id="token" required style="width: 400px;" class="form-control"><br><br>
-
-                        <label for="title">Title:</label><br>
-                        <input type="text" name="title" id="title" required class="form-control"><br><br>
-
-                        <label for="body">Message Body:</label><br>
-                        <textarea name="body" id="message-body" rows="4" required class="form-control"></textarea><br><br>
-                        <button type="submit">Send Notification</button>
-                    </form> -->
-                    <form method="POST" action="/campaigns">
+                    
                         @csrf
                         <label>Title:</label><br>
                         <input name="title" required class="form-control" id="message-title">
 
                         <label>Description:</label><br>
                         <textarea name="body" required class="form-control" id="message-body"  rows="5"></textarea><br><br>
-
-                        <label>Device Tokens (comma-separated):</label><br>
                         <input type="hidden" id="location" value="" name="location">
-                        <textarea name="tokens" class="form-control"></textarea><br>
 
                         <button type="submit" class="form-control">Create & Send</button>
                     </form>

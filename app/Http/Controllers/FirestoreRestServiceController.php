@@ -14,7 +14,7 @@ class FirestoreRestServiceController extends Controller
             foreach ($documents['documents'] ?? [] as $doc) {
                 // echo "Document: " . basename($doc['name']) . "<br>";
                 // echo "Fields: <pre>" . print_r($doc['fields'], true) . "</pre><hr>";
-                echo $doc['fields']['lat']['doubleValue'] . "<br>";
+                echo "Name: " . basename($doc['name']) . "Token: " . basename($doc['fields']['token']['stringValue']) . " Lon: " . $doc['fields']['lng']['doubleValue'] . " Lat: " . $doc['fields']['lat']['doubleValue'] . "<br>";
             }
 
         }
