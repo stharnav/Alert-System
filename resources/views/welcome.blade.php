@@ -37,6 +37,8 @@
 
     <div class="container">
          <h1>FCM Notification Alert System</h1>
+         <a href="/users" class="btn btn-primary mb-3">User Data</a>
+         <a href="/campaigns" class="btn btn-primary mb-3">Campaigns</a>
         <div class="information-pannel">
             <div class="row">
                 <div id="map" style="height: 500px; border-radius: 10px "></div>

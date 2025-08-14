@@ -14,5 +14,9 @@ Route::get('/', [NotificationController::class, 'index']);
 Route::post('/send-push', [NotificationController::class, 'sendPush']);
 Route::post('/campaigns', [CampaignController::class, 'store'])->name('welcome');
 
-Route::get('/firestore-rest', [FirestoreRestServiceController::class, 'index'])->name('index');
-Route::post('/get-users-with-radius', [GetUserWithRadius::class, 'index'])->name('getUsersWithRadius');
+Route::get('/users', [FirestoreRestServiceController::class, 'index'])->name('index');
+
+
+Route::get('/campaigns', [CampaignController::class, 'index'])->name('campaigns');
+Route::delete('/delete-all', [CampaignController::class, 'destroyAll'])->name('campaigns');
+

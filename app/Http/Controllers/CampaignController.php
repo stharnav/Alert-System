@@ -13,6 +13,12 @@ class CampaignController extends Controller
         return view('welcome');
     }
 
+    public function index() {
+        $campaigns = Campaign::orderBy('created_at', 'desc')->get();
+        return view('campaigns', compact('campaigns'));
+    }
+
+
     public function store(Request $request, FirebaseService $firebase, FireStoreRestService $firestore) {
         $request->validate([
             'title' => 'required',
@@ -98,4 +104,11 @@ class CampaignController extends Controller
 
         return $earthRadius * $c;
     }
+
+    public function destroyAll()
+    {
+        Campaign::truncate(); // This deletes all records in the campaigns table
+        return redirect()->back()->with('status', 'All campaigns deleted successfully.');
+    }
+
 }
